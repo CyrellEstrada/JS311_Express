@@ -14,7 +14,7 @@ app.get('/users', (req, res) => {
 })
 
 app.get('/users/:id', (req, res) => {
-  return res.json(users.filter((user) => parseInt(req.params.id) === user._id))
+  return res.json(users.find((user) => parseInt(req.params.id) === user._id))
 })
 
 app.post('/users', ((req, res) => {
@@ -27,19 +27,30 @@ app.post('/users', ((req, res) => {
   return res.json(users[users.length - 1])
 }))
 
-app.put('/users/1', (req, res) => {
-  const user = users[0]
-  user.name = "Cyrell"
-  user.occupation = "Engineer"
+app.put('/users/:usersId', (req, res) => {
+  const index = users.findIndex((user) => {
+    return user._id == req.params.usersId
+  })
+  
+
+  users[index].name = req.body.name
+  users[index].occupation = req.body.occupation
 
   return res.json(users)
 })
 
-app.delete('/users/1', (req, res) => {
-  const user = users.splice(0)[0]
+app.delete('/users/:usersId', (req, res) => {
+  // console.log(req, "These are your parameters")
+  const index = users.findIndex((user) => {
+    return user._id == req.params.usersId
+  })
+  const deletedUser = users.splice(index, 1)
 
 console.log("code ran")
-  return res.json(user), res.send("User deleted")
+  return res.json({
+    message: "User Deleted",
+    user: deletedUser
+  })
 })
 /* END - create routes here */
 
